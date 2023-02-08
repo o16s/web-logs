@@ -38,7 +38,7 @@
           client.onMessageArrived = function(message) {
             let logLine = document.createElement("div");
             logLine.innerHTML = message.payloadString;
-            if (message.payloadString.includes("ERROR") || message.payloadString.includes("WARNING")) {
+            if (message.payloadString.includes(" ERROR") || message.payloadString.includes(" WARNING")) {
               //dark red and bold
               logLine.style.color = "#8b0000";
               logLine.style.fontWeight = "bold";
