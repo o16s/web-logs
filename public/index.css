@@ -1,21 +1,15 @@
+
+body {
+  font-family: sans-serif;
+}
 pre {
   margin: 0 auto;
   padding: 10px;
   background: lightcyan;
-  text-align: center;
+  text-align: left;
 }
-.center {
-  text-align: center;
-  padding: 10px;
-}
-.center button {
-  border: 3px solid green;
-  background: white;
-  border-radius: 10px;
-  padding: 10px;
-}
-.container {
-  margin: 0 auto;
-  max-width: 500px;
-  width: 50%;
+#logContainer {
+  height: 800px;
+  overflow: scroll;
+  border: 1px solid black;
 }

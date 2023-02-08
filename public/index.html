@@ -1,25 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>vanilla html js netlify example</title>
+    <title>MQTT Logger</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.0.2/mqttws31.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="index.css">
 
-    <link rel="stylesheet" type="text/css" href="index.css" />
-    <script type="text/javascript" src="/script.js"></script>
   </head>
   <body>
-    <div class="container">
-      <h1>Vanilla HTML JS netlify example</h1>
-      <div class="center"><button id="button">Click me</button></div>
-      <pre id="message">
-      Click the button!
-    </pre
-      >
-      <div>
-        <a href="https://github.com/netlify-labs/vanilla-html-js-example">View source</a>
-      </div>
+    <div>
+      Enter the serial number of the device you want to connect to (you must have ethernet/wifi connection to the device):
+      <br/>
+      Important: go to about:config and set "network.websocket.allowInsecureFromHTTPS" to "true".
+      <br/>
+      <br/>
+      
+      <input type="text" id="ipAddressSuffix" placeholder="Serial number">
+      <button id="connectButton">Connect</button>
+      <button id="pauseButton">Pause Auto-Scroll</button><br/>
     </div>
+    <div id="logContainer">
+      <pre id="logs">
+      </pre>
+    </div>
+
+    <script>
+      const pauseButton = document.getElementById("pauseButton");
+      const ipAddressSuffix = document.getElementById("ipAddressSuffix");
+      const connectButton = document.getElementById("connectButton");
+      let client;
+      let autoScrolling = true;
+      let connected = false;
+
+      connectButton.addEventListener("click", () => {
+        if (!connected) {
+          client = new Paho.MQTT.Client("169.254.1."+ipAddressSuffix.value, 9001, "clientId");
+
+          client.onMessageArrived = function(message) {
+            let logLine = document.createElement("div");
+            logLine.innerHTML = message.payloadString;
+            if (message.payloadString.includes("ERROR") || message.payloadString.includes("WARNING")) {
+              //dark red and bold
+              logLine.style.color = "#8b0000";
+              logLine.style.fontWeight = "bold";
+            }
+            logs.appendChild(logLine);
+            if (autoScrolling) {
+              logContainer.scrollTop = logContainer.scrollHeight;
+            }
+          };
+
+          client.connect({onSuccess: function() {
+            client.subscribe("/logs");
+            connectButton.innerHTML = "Disconnect";
+            connected = true;
+          }});
+        } else {
+          client.disconnect();
+          logs.innerHTML = "";
+          connectButton.innerHTML = "Connect";
+          connected = false;
+        }
+
+      });
+
+      pauseButton.addEventListener("click", function() {
+        autoScrolling = !autoScrolling;
+        if (autoScrolling) {
+          pauseButton.innerHTML = "Pause Auto-Scroll";
+        } else {
+          pauseButton.innerHTML = "Resume";
+        }
+      });
+
+    </script>
   </body>
 </html>
