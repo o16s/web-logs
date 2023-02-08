@@ -8,8 +8,20 @@ pre {
   background: lightcyan;
   text-align: left;
 }
+
 #logContainer {
   height: 800px;
-  overflow: scroll;
+  width: 70%;
   border: 1px solid black;
+  float: left;
+  overflow: auto;
+}
+
+#sidebar {
+  border: 1px solid black;
+
+  width: 29%;
+  height: 800px;
+  float: right;
+  overflow: auto;
 }
